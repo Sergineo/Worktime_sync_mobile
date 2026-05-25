@@ -1,0 +1,18 @@
+<resources>
+    <string name="authorization">Авторизация</string>
+    <string name="registration">Регистрация</string>
+    <string name="enter_username">Введите ваше имя</string>
+    <string name="username">Имя пользователя</string>
+    <string name="email">Адрес эл. почты</string>
+    <string name="enter_email">Введите ваш адрес эл. почты</string>
+    <string name="enter_password">Введите пароль</string>
+    <string name="password">Пароль</string>
+    <string name="repeat_password">Повторите пароль</string>
+    <string name="enter_your_team">Введите название организации</string>
+    <string name="team">Название организации</string>
+    <string name="select_your_role">Выберите роль</string>
+    <string name="enter_with">Войти с помощью</string>
+    <string name="role">Роль</string>
+    <string name="next">Далее</string>
+    <string name="uncorrent_login_or_password">Неверный логин или пароль</string>
+</resources>

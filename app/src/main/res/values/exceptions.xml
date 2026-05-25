@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="unauthorized">Необходимо зарегистрироваться</string>
+    <string name="no_internet_connection">Отсутствует подкллючение к интернету</string>
+    <string name="unknown">Неизвестная ошибка</string>
+    <string name="uncorrect_email_format">Неверный формат почты</string>
+    <string name="empty_text_field">Поле обязательно для заполнения</string>
+    <string name="uncorrect_repeat_password">Пароли не совпадают</string>
+</resources>
