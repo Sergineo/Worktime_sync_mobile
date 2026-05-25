@@ -1,5 +1,6 @@
 package io.hornet.worktimesync.authorization.presentation.view_model
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.hornet.worktimesync.R
@@ -9,6 +10,8 @@ import io.hornet.worktimesync.authorization.domain.screen_model.AuthorizationScr
 import io.hornet.worktimesync.authorization.domain.screen_model.NextButtonScreenEvents
 import io.hornet.worktimesync.authorization.domain.screen_model.TextFieldScreenEvents
 import io.hornet.worktimesync.authorization.presentation.navigation.router.AuthorizationRouter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,13 +24,12 @@ class AuthorizationScreenViewModel(
     private val authorizationInteractor: AuthorizationInteractor,
     private val authorizationRouter: AuthorizationRouter
 ) : ViewModel() {
-    val _authorizationScreenState = MutableStateFlow(AuthorizationScreen())
-    val authorizationScreenState: StateFlow<AuthorizationScreen> =
-        _authorizationScreenState.asStateFlow()
 
-    val _authorizationErrorViewModel = MutableStateFlow<ValidationError?>(null)
-    val authorizationErrorViewModel: SharedFlow<ValidationError?> =
-        _authorizationErrorViewModel.asSharedFlow()
+    private val _authorizationScreenState = MutableStateFlow(AuthorizationScreen())
+    val authorizationScreenState: StateFlow<AuthorizationScreen> = _authorizationScreenState.asStateFlow()
+
+    private val _authorizationErrorViewModel = MutableSharedFlow<ValidationError?>()
+    val authorizationErrorViewModel: SharedFlow<ValidationError?> = _authorizationErrorViewModel.asSharedFlow()
 
     fun setSelectedAuthorizationMode(index: Int) = _authorizationScreenState.update {
         it.copy(selectedMode = index)
@@ -39,48 +41,34 @@ class AuthorizationScreenViewModel(
                 is TextFieldScreenEvents.TextFieldModeFragment.EmailChanged -> {
                     currentState.copy(
                         authorizationFragment = currentState.authorizationFragment.copy(
-                            email = authorizationInteractor.validateEmailTextField(
-                                event.textField
-                            )
+                            email = authorizationInteractor.validateEmailTextField(event.textField)
                         )
                     )
                 }
-
                 is TextFieldScreenEvents.TextFieldModeFragment.PasswordChanged -> currentState.copy(
                     authorizationFragment = currentState.authorizationFragment.copy(
-                        password = authorizationInteractor.validateEmptyTextFiled(
-                            event.textField
-                        )
+                        password = authorizationInteractor.validateEmptyTextFiled(event.textField)
                     )
                 )
-
                 is TextFieldScreenEvents.RegistrationModeFragment.EmailChanged -> currentState.copy(
                     registrationFragment = currentState.registrationFragment.copy(
-                        email = authorizationInteractor.validateEmailTextField(
-                            event.textField
-                        )
+                        email = authorizationInteractor.validateEmailTextField(event.textField)
                     )
                 )
-
                 is TextFieldScreenEvents.RegistrationModeFragment.NewPasswordChanged -> currentState.copy(
                     registrationFragment = currentState.registrationFragment.copy(
-                        password = authorizationInteractor.validateEmptyTextFiled(
-                            event.textField
+                        password = authorizationInteractor.validateEmptyTextFiled(event.textField)
+                    )
+                )
+                is TextFieldScreenEvents.RegistrationModeFragment.RepeatPasswordChanged -> currentState.copy(
+                    registrationFragment = currentState.registrationFragment.copy(
+                        repeatPassword = authorizationInteractor.validateRepeatPassword(
+                            event.textField,
+                            currentState.registrationFragment.password.message?.toString(),
+                            event.textField.message?.toString()
                         )
                     )
                 )
-
-                is TextFieldScreenEvents.RegistrationModeFragment.RepeatPasswordChanged ->
-                    currentState.copy(
-                        registrationFragment = currentState.registrationFragment.copy(
-                            repeatPassword = authorizationInteractor.validateRepeatPassword(
-                                event.textField,
-                                authorizationScreenState.value.registrationFragment.password.message,
-                                authorizationScreenState.value.registrationFragment.repeatPassword.message
-                            )
-                        )
-                    )
-
             }
         }
     }
@@ -93,13 +81,14 @@ class AuthorizationScreenViewModel(
                         _authorizationScreenState.value.registrationFragment
                     ).fold(
                         onSuccess = {
-                            authorizationRouter.goToProfileScreen()
+                            _authorizationErrorViewModel.emit(
+                                ValidationError.NeedToRegistration(R.string.need_to_registration)
+                            )
+                            setSelectedAuthorizationMode(1)
                         },
                         onFailure = {
                             _authorizationErrorViewModel.emit(
-                                ValidationError.ErrorAuthorization(
-                                    R.string.uncorrent_login_or_password
-                                )
+                                ValidationError.ErrorRegistration(R.string.unknown)
                             )
                         }
                     )
@@ -109,15 +98,25 @@ class AuthorizationScreenViewModel(
                     authorizationInteractor.login(
                         _authorizationScreenState.value.authorizationFragment
                     ).fold(
-                        onSuccess = {
-                            authorizationInteractor.saveLocalToken(it!!)
-                            authorizationRouter.goToProfileScreen()
-                        },
-                        onFailure = {
-                            _authorizationErrorViewModel.emit(
-                                ValidationError.ErrorRegistration(
-                                    R.string.unknown
+                        onSuccess = { token ->
+                            if (token != null) {
+                                Log.d("AUTH_SUCCESS", "Токен успешно получен!")
+                                authorizationInteractor.saveLocalToken(token)
+                                viewModelScope.launch(Dispatchers.Main.immediate) {
+                                    Log.d("AUTH_NAV", "Вызываем goToProfileScreen в Main потоке")
+                                    authorizationRouter.goToProfileScreen()
+                                }
+                            } else {
+                                Log.e("AUTH_ERROR", "Тело ответа пустое")
+                                _authorizationErrorViewModel.emit(
+                                    ValidationError.ErrorAuthorization(R.string.uncorrent_login_or_password)
                                 )
+                            }
+                        },
+                        onFailure = { throwable ->
+                            Log.e("AUTH_CRITICAL", "Ошибка: ${throwable.javaClass.simpleName}")
+                            _authorizationErrorViewModel.emit(
+                                ValidationError.ErrorAuthorization(R.string.uncorrent_login_or_password)
                             )
                         }
                     )

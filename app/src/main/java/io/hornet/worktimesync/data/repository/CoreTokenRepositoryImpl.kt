@@ -20,5 +20,4 @@ class CoreTokenRepositoryImpl(
     override suspend fun refreshRemoteToken(oldToken: JwtToken): Result<JwtToken?> {
         return jwtTokenRemoteDataSource.refreshToken(oldToken)
     }
-
 }

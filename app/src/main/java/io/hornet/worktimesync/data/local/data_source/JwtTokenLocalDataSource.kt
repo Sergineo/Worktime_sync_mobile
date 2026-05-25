@@ -41,19 +41,23 @@ class JwtTokenLocalDataSource(
         if (access == null && refresh == null) return null
 
         return JwtToken(
-            accessToken = access,
-            refreshToken = refresh
+            access_token = access,
+            refresh_token = refresh,
+            token_type = "bearer"
         )
     }
 
     fun saveLocalJwtToken(jwtToken: JwtToken) {
         sharedPreferences.edit {
-            putString(KEY_ACCESS_TOKEN, jwtToken.accessToken)
-            putString(KEY_REFRESH_TOKEN, jwtToken.refreshToken)
+            putString(KEY_ACCESS_TOKEN, jwtToken.access_token)
+            putString(KEY_REFRESH_TOKEN, jwtToken.refresh_token)
         }
     }
 
     fun deleteJwtToken() {
         sharedPreferences.edit { clear() }
+    }
+    init{
+        deleteJwtToken()
     }
 }

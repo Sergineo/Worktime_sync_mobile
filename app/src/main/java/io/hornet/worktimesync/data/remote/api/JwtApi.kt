@@ -1,9 +1,9 @@
 package io.hornet.worktimesync.data.remote.api
 
 import io.hornet.worktimesync.authorization.domain.User
-import io.hornet.worktimesync.authorization.domain.screen_model.RegistrationFragment
 import io.hornet.worktimesync.core.domain.model.JwtToken
-import retrofit2.Call
+import io.hornet.worktimesync.data.remote.dto.RegistrationDto
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -11,19 +11,20 @@ import retrofit2.http.POST
 
 interface JwtApi {
     @FormUrlEncoded
-    @POST("auth/login")
+    @POST("api/auth/login")
     suspend fun login(
         @Field("username") email: String,
-        @Field("password") password: String
-    ): Call<JwtToken>
+        @Field("password") password: String,
+        @Field("grant_type") grantType: String
+    ): Response<JwtToken>
 
     @POST("auth/refresh")
     suspend fun refreshToken(
         @Body refreshToken: String
-    ): Call<JwtToken>
+    ): Response<JwtToken>
 
-    @POST("auth/registration")
+    @POST("api/users/register")
     suspend fun registration(
-        @Body request: RegistrationFragment
-    ): Call<User>
+        @Body request: RegistrationDto
+    ): Response<User>
 }

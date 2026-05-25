@@ -11,9 +11,11 @@ fun AuthorizationToastWidget(
     context: Context,
     authorizationScreenViewModel: AuthorizationScreenViewModel
 ){
-    LaunchedEffect(Unit) {
-        authorizationScreenViewModel.authorizationErrorViewModel.collect {
-            Toast.makeText(context, it.toString(), Toast.LENGTH_SHORT).show()
+    LaunchedEffect(key1 = true) {
+        authorizationScreenViewModel.authorizationErrorViewModel.collect { error ->
+            if (error != null) {
+                Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

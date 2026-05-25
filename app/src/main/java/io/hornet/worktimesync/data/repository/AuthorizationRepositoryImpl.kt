@@ -7,6 +7,7 @@ import io.hornet.worktimesync.authorization.domain.screen_model.RegistrationFrag
 import io.hornet.worktimesync.core.domain.model.JwtToken
 import io.hornet.worktimesync.data.local.data_source.JwtTokenLocalDataSource
 import io.hornet.worktimesync.data.remote.data_source.JwtTokenRemoteDataSource
+import io.hornet.worktimesync.data.remote.mapper.toDto
 
 class AuthorizationRepositoryImpl(
     private val jwtTokenRemoteDataSource: JwtTokenRemoteDataSource,
@@ -17,7 +18,9 @@ class AuthorizationRepositoryImpl(
     }
 
     override suspend fun registration(registrationFragment: RegistrationFragment): Result<User?> {
-        return jwtTokenRemoteDataSource.registration(registrationFragment)
+        return jwtTokenRemoteDataSource.registration(
+            registrationFragment.toDto()
+        )
     }
 
     override suspend fun saveLocalToken(jwtToken: JwtToken) {
