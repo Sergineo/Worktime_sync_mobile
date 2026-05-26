@@ -2,7 +2,6 @@ package io.hornet.worktimesync.data.remote.data_source
 
 import android.util.Log
 import io.hornet.worktimesync.authorization.domain.User
-import io.hornet.worktimesync.authorization.domain.screen_model.AuthorizationFragment
 import io.hornet.worktimesync.core.domain.exceptions.DomainCoreException
 import io.hornet.worktimesync.core.domain.exceptions.JwtTokerError
 import io.hornet.worktimesync.core.domain.model.JwtToken
@@ -10,27 +9,21 @@ import io.hornet.worktimesync.data.remote.api.JwtApi
 import io.hornet.worktimesync.data.remote.dto.RegistrationDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
 
 class JwtTokenRemoteDataSource(
     private val jwtApi: JwtApi,
 ) {
-    suspend fun login(authorizationFragment: AuthorizationFragment): Result<JwtToken?> {
-        // Вытаскиваем строки на Главном потоке ДО входа в IO-контекст
-        val emailStr = authorizationFragment.email.message?.toString() ?: ""
-        val passwordStr = authorizationFragment.password.message?.toString() ?: ""
-
+    suspend fun login(email: String, password: String): Result<JwtToken?> {
         return withContext(Dispatchers.IO) {
             try {
-                Log.d("NETWORK_START", "Отправка на сервер: $emailStr")
-
                 val response: Response<JwtToken> = jwtApi.login(
-                    email = emailStr,
-                    password = passwordStr,
+                    email = email,
+                    password = password,
                     grantType = "password"
                 )
+                Log.d("NETWORK_START", "Отправка на сервер: $email")
 
                 if (response.isSuccessful) {
                     val token = response.body()

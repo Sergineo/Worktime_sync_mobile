@@ -14,7 +14,7 @@ class JwtApiClient {
         .build()
     private val jwtApiConfig: Retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl("http://192.168.31.43:8000/")
+            .baseUrl("http://10.70.52.86:8000/")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

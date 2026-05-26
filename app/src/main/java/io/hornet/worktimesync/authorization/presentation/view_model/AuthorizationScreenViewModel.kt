@@ -1,6 +1,7 @@
 package io.hornet.worktimesync.authorization.presentation.view_model
 
 import android.util.Log
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.hornet.worktimesync.R
@@ -21,15 +22,16 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AuthorizationScreenViewModel(
-    private val authorizationInteractor: AuthorizationInteractor,
-    private val authorizationRouter: AuthorizationRouter
+    private val authorizationInteractor: AuthorizationInteractor
 ) : ViewModel() {
 
     private val _authorizationScreenState = MutableStateFlow(AuthorizationScreen())
-    val authorizationScreenState: StateFlow<AuthorizationScreen> = _authorizationScreenState.asStateFlow()
+    val authorizationScreenState: StateFlow<AuthorizationScreen> =
+        _authorizationScreenState.asStateFlow()
 
     private val _authorizationErrorViewModel = MutableSharedFlow<ValidationError?>()
-    val authorizationErrorViewModel: SharedFlow<ValidationError?> = _authorizationErrorViewModel.asSharedFlow()
+    val authorizationErrorViewModel: SharedFlow<ValidationError?> =
+        _authorizationErrorViewModel.asSharedFlow()
 
     fun setSelectedAuthorizationMode(index: Int) = _authorizationScreenState.update {
         it.copy(selectedMode = index)
@@ -45,21 +47,25 @@ class AuthorizationScreenViewModel(
                         )
                     )
                 }
+
                 is TextFieldScreenEvents.TextFieldModeFragment.PasswordChanged -> currentState.copy(
                     authorizationFragment = currentState.authorizationFragment.copy(
                         password = authorizationInteractor.validateEmptyTextFiled(event.textField)
                     )
                 )
+
                 is TextFieldScreenEvents.RegistrationModeFragment.EmailChanged -> currentState.copy(
                     registrationFragment = currentState.registrationFragment.copy(
                         email = authorizationInteractor.validateEmailTextField(event.textField)
                     )
                 )
+
                 is TextFieldScreenEvents.RegistrationModeFragment.NewPasswordChanged -> currentState.copy(
                     registrationFragment = currentState.registrationFragment.copy(
                         password = authorizationInteractor.validateEmptyTextFiled(event.textField)
                     )
                 )
+
                 is TextFieldScreenEvents.RegistrationModeFragment.RepeatPasswordChanged -> currentState.copy(
                     registrationFragment = currentState.registrationFragment.copy(
                         repeatPassword = authorizationInteractor.validateRepeatPassword(
@@ -73,7 +79,8 @@ class AuthorizationScreenViewModel(
         }
     }
 
-    fun onClickedNextButton(events: NextButtonScreenEvents) {
+
+    fun onClickedNextButton(events: NextButtonScreenEvents, navigateCall: () -> Unit) {
         viewModelScope.launch {
             when (events) {
                 is NextButtonScreenEvents.RegistrationClicked -> {
@@ -95,8 +102,17 @@ class AuthorizationScreenViewModel(
                 }
 
                 is NextButtonScreenEvents.AuthorizationClicked -> {
+                    Log.e("INPUT", _authorizationScreenState.value
+                        .authorizationFragment.email.message.toString())
+                    Log.e("INPUT", _authorizationScreenState.value
+                        .authorizationFragment.password.message.toString())
+
                     authorizationInteractor.login(
-                        _authorizationScreenState.value.authorizationFragment
+                        email = _authorizationScreenState.value
+                            .authorizationFragment.email.message.toString(),
+                        password = _authorizationScreenState.value
+                            .authorizationFragment.password.message.toString()
+
                     ).fold(
                         onSuccess = { token ->
                             if (token != null) {
@@ -104,7 +120,7 @@ class AuthorizationScreenViewModel(
                                 authorizationInteractor.saveLocalToken(token)
                                 viewModelScope.launch(Dispatchers.Main.immediate) {
                                     Log.d("AUTH_NAV", "Вызываем goToProfileScreen в Main потоке")
-                                    authorizationRouter.goToProfileScreen()
+                                    navigateCall()
                                 }
                             } else {
                                 Log.e("AUTH_ERROR", "Тело ответа пустое")

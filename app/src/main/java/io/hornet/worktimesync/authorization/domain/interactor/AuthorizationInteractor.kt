@@ -1,5 +1,6 @@
 package io.hornet.worktimesync.authorization.domain.interactor
 
+import android.util.Log
 import io.hornet.worktimesync.R
 import io.hornet.worktimesync.authorization.domain.User
 import io.hornet.worktimesync.authorization.domain.screen_model.AuthorizationFragment
@@ -20,8 +21,10 @@ class AuthorizationInteractor(
 
     val validateEmptyTextFiled: ValidateTextFieldProcessor = { event ->
         if (!(event.message!!.isEmpty() || event.message.isBlank())) {
+            Log.d("INPUT", event.message)
             TextField(message = event.message, isError = false)
         } else {
+            Log.d("INPUT", event.message)
             TextField(
                 message = event.message,
                 isError = true,
@@ -32,6 +35,7 @@ class AuthorizationInteractor(
 
     val validateEmailTextField: ValidateTextFieldProcessor = { event ->
         if (event.message!!.isEmpty() || event.message.isBlank()) {
+            Log.d("INPUT", event.message)
             TextField(
                 message = event.message,
                 isError = true,
@@ -39,8 +43,10 @@ class AuthorizationInteractor(
             )
         }
         if (event.message.contains('@') && event.message.contains('.')) {
+            Log.d("INPUT", event.message)
             TextField(message = event.message, isError = false)
         } else {
+            Log.d("INPUT", event.message)
             TextField(
                 message = event.message,
                 isError = true,
@@ -68,8 +74,8 @@ class AuthorizationInteractor(
             }
         }
 
-    suspend fun login(authorizationFragment: AuthorizationFragment): Result<JwtToken?>{
-        return authorizationRepository.login(authorizationFragment)
+    suspend fun login(email: String, password: String): Result<JwtToken?>{
+        return authorizationRepository.login(email, password)
     }
     suspend fun registration(registrationFragment: RegistrationFragment): Result<User?>{
         return authorizationRepository.registration(registrationFragment)

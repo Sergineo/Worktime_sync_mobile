@@ -1,5 +1,6 @@
 package io.hornet.worktimesync.di
 
+
 import io.hornet.worktimesync.core.domain.interactor.NavigationInteractor
 import io.hornet.worktimesync.core.domain.interactor.CoreTokenRepository
 import io.hornet.worktimesync.core.presentaition.view_model.NavViewModel
@@ -9,6 +10,7 @@ import io.hornet.worktimesync.data.remote.config.JwtApiClient
 import io.hornet.worktimesync.data.remote.data_source.JwtTokenRemoteDataSource
 import io.hornet.worktimesync.data.repository.CoreTokenRepositoryImpl
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val coreDiModule = module {
@@ -27,5 +29,5 @@ val coreDiModule = module {
         )
     }
     single { NavigationInteractor(get<CoreTokenRepository>()) }
-    single { NavViewModel(get<NavigationInteractor>()) }
+    viewModel { NavViewModel(get<NavigationInteractor>())}
 }

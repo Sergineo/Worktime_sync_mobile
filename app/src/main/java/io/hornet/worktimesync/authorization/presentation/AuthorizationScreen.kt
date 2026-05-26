@@ -22,7 +22,8 @@ import androidx.compose.ui.graphics.Color as ComposeColor
 
 @Composable
 fun AuthorizationScreen(
-    viewModel: AuthorizationScreenViewModel
+    viewModel: AuthorizationScreenViewModel,
+    navigateToProfileScreen: (event: NextButtonScreenEvents) -> Unit
 ) {
     val authorizationOptions =
         viewModel.authorizationScreenState.collectAsState().value.authorizationMode
@@ -53,7 +54,7 @@ fun AuthorizationScreen(
                     )
                     NextButton(
                         onClick = {
-                            viewModel.onClickedNextButton(
+                            navigateToProfileScreen(
                                 NextButtonScreenEvents.AuthorizationClicked
                             )
                         },
@@ -65,15 +66,16 @@ fun AuthorizationScreen(
                         viewModel = viewModel
                     )
                     NextButton(
-                        onClick = {
-                            viewModel.onClickedNextButton(
-                                NextButtonScreenEvents.RegistrationClicked
-                            )
-                        },
+                        onClick = {navigateToProfileScreen(
+                            NextButtonScreenEvents.RegistrationClicked
+                        )},
                     )
                 }
             }
         }
     }
-    AuthorizationToastWidget(context = LocalContext.current, authorizationScreenViewModel = viewModel)
+    AuthorizationToastWidget(
+        context = LocalContext.current,
+        authorizationScreenViewModel = viewModel
+    )
 }

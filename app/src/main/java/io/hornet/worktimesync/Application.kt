@@ -10,16 +10,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.Scaffold
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import io.hornet.worktimesync.authorization.presentation.view_model.AuthorizationScreenViewModel
 import io.hornet.worktimesync.core.presentaition.navigation.BottomBar
 import io.hornet.worktimesync.core.presentaition.navigation.NavRoot
-import io.hornet.worktimesync.core.presentaition.navigation.router_impl.RouterCore
+import io.hornet.worktimesync.core.presentaition.navigation.router_impl.AuthorizationRouterImpl
 import io.hornet.worktimesync.core.presentaition.view_model.NavViewModel
 import io.hornet.worktimesync.core.presentaition.widget.MainToastWidget
 import io.hornet.worktimesync.theme.Theme
 import io.hornet.worktimesync.theme.presentaition.colors.ColorShema
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class Application : AppCompatActivity() {
+class Application() : AppCompatActivity(), KoinComponent {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(
@@ -56,8 +59,7 @@ class Application : AppCompatActivity() {
                     NavRoot(
                         navController = navController,
                         paddingValues = paddingValues,
-                        navViewModel = navViewModel,
-                        routerCore = RouterCore()
+                        navViewModel = navViewModel
                     )
                 }
             }

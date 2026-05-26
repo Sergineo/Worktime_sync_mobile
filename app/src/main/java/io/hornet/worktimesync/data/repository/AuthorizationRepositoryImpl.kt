@@ -13,8 +13,8 @@ class AuthorizationRepositoryImpl(
     private val jwtTokenRemoteDataSource: JwtTokenRemoteDataSource,
     private val jwtTokenLocalDataSource: JwtTokenLocalDataSource
 ): AuthorizationRepository {
-    override suspend fun login(authorizationFragment: AuthorizationFragment): Result<JwtToken?> {
-        return jwtTokenRemoteDataSource.login(authorizationFragment)
+    override suspend fun login(email: String, password: String): Result<JwtToken?> {
+        return jwtTokenRemoteDataSource.login(email, password)
     }
 
     override suspend fun registration(registrationFragment: RegistrationFragment): Result<User?> {
