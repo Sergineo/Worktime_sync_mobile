@@ -44,7 +44,7 @@ import io.hornet.worktimesync.theme.presentaition.colors.ColorShema
 
 @Composable
 fun AvailabilityScreen(viewModel: AvailabilityViewModel, modifier: Modifier = Modifier) {
-    val colors = ColorShema.current // Ваша кастомная тема подключена
+    val colors = ColorShema.current
     val matrix by viewModel.matrixState.collectAsState()
     val uiCells by viewModel.cellsState.collectAsState()
     val selectedDetails by viewModel.selectedDetails.collectAsState()
@@ -56,19 +56,18 @@ fun AvailabilityScreen(viewModel: AvailabilityViewModel, modifier: Modifier = Mo
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(color = colors.background) // Фон экрана берется из темы (светло-зеленый / черный)
+            .background(color = colors.background)
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         Text(
-            text = matrix?.dateRange ?: "07.05-14.05",
+            text = "24.05-31.05",
             fontSize = 16.sp,
             color = colors.onSurfaceVariant
         )
 
-        // Сетка карты
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = colors.surface), // Подложка карточки
@@ -96,7 +95,6 @@ fun AvailabilityScreen(viewModel: AvailabilityViewModel, modifier: Modifier = Mo
                         repeat(7) { dayIdx ->
                             val uiCell = uiCells.find { it.cell.dayIndex == dayIdx && it.cell.hour == hour }
 
-                            // Вычисляем цвета ячеек матрицы на основе интенсивности и текущей темы
                             val cellColor = when (uiCell?.intensity) {
                                 CellIntensity.GREEN -> if (isSystemInDarkTheme()) Color(0xFF0F3D1B) else Color(0xFFD4EDDA)
                                 CellIntensity.YELLOW -> if (isSystemInDarkTheme()) Color(0xFF3D350F) else Color(0xFFFFF3CD)
@@ -104,7 +102,7 @@ fun AvailabilityScreen(viewModel: AvailabilityViewModel, modifier: Modifier = Mo
                                 else -> colors.surface
                             }
 
-                            val isTargetCell = (hour == "12:00" && dayIdx == 3) // Выделенная ЧТ 12:00
+                            val isTargetCell = (hour == "12:00" && dayIdx == 3)
 
                             Box(
                                 modifier = Modifier
@@ -145,7 +143,7 @@ fun AvailabilityScreen(viewModel: AvailabilityViewModel, modifier: Modifier = Mo
             ) {
                 Column(modifier = Modifier.padding(20.dp)) {
                     Text(
-                        text = "Чт, 4 мая, 12:00",
+                        text = "Чт, 28 мая, 12:00",
                         fontSize = 16.sp,
                         color = colors.onSurfaceVariant,
                         modifier = Modifier.fillMaxWidth(),
