@@ -3,6 +3,7 @@ package io.hornet.worktimesync.authorization.presentation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -27,8 +28,18 @@ fun AuthorizationScreen(
 ) {
     val authorizationOptions =
         viewModel.authorizationScreenState.collectAsState().value.authorizationMode
+
     val selectedOption by viewModel.authorizationScreenState.collectAsStateWithLifecycle()
     val selectedIndex = selectedOption.selectedMode
+
+    val email =
+        viewModel.authorizationScreenState.collectAsState().value.authorizationFragment.email
+    val password =
+        viewModel.authorizationScreenState.collectAsState().value.authorizationFragment.password
+    val newEmail =
+        viewModel.authorizationScreenState.collectAsState().value.registrationFragment.email
+    val newPassword =
+        viewModel.authorizationScreenState.collectAsState().value.registrationFragment.password
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -55,7 +66,7 @@ fun AuthorizationScreen(
                     NextButton(
                         onClick = {
                             navigateToProfileScreen(
-                                NextButtonScreenEvents.AuthorizationClicked
+                                NextButtonScreenEvents.AuthorizationClicked(email, password)
                             )
                         },
                     )
@@ -66,9 +77,11 @@ fun AuthorizationScreen(
                         viewModel = viewModel
                     )
                     NextButton(
-                        onClick = {navigateToProfileScreen(
-                            NextButtonScreenEvents.RegistrationClicked
-                        )},
+                        onClick = {
+                            navigateToProfileScreen(
+                                NextButtonScreenEvents.RegistrationClicked(newEmail, newPassword)
+                            )
+                        },
                     )
                 }
             }

@@ -9,4 +9,10 @@ sealed interface NavigationScreenEvent {
 
     @Serializable
     data object ProfileScreenPoint : NavigationScreenEvent
+
+    @Serializable
+    data object MapScreenPoint : NavigationScreenEvent
+
+    @Serializable
+    data object ConflictScreenPoint : NavigationScreenEvent
 }

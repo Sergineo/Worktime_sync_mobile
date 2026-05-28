@@ -55,12 +55,12 @@ fun ColumnScope.SelectedAuthorizationModeButton(
                     activeContentColor = ColorShema.current.onPrimary,
                     activeBorderColor = ColorShema.current.primary,
                     inactiveContainerColor = ColorShema.current.secondary,
-                    inactiveContentColor = ColorShema.current.onSecondary,
+                    inactiveContentColor = ColorShema.current.onSurface.copy(alpha = 0.5f),
                     inactiveBorderColor = ColorShema.current.outline,
                     disabledActiveContainerColor = ColorShema.current.secondary.copy(alpha = 0.5f),
-                    disabledActiveContentColor = ColorShema.current.onSecondary.copy(alpha = 0.5f),
+                    disabledActiveContentColor = ColorShema.current.onSurface.copy(alpha = 0.5f),
                     disabledInactiveContainerColor = ColorShema.current.secondary.copy(alpha = 0.5f),
-                    disabledInactiveContentColor = ColorShema.current.onSecondary.copy(alpha = 0.5f),
+                    disabledInactiveContentColor = ColorShema.current.onSurface.copy(alpha = 0.5f),
                     disabledActiveBorderColor = ColorShema.current.outline.copy(alpha = 0.5f),
                     disabledInactiveBorderColor = ColorShema.current.outline.copy(alpha = 0.5f)
                 )

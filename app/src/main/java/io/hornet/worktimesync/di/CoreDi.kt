@@ -29,5 +29,5 @@ val coreDiModule = module {
         )
     }
     single { NavigationInteractor(get<CoreTokenRepository>()) }
-    viewModel { NavViewModel(get<NavigationInteractor>())}
+    single { NavViewModel(get<NavigationInteractor>())}
 }

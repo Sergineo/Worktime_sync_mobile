@@ -1,7 +1,9 @@
 package io.hornet.worktimesync.core.domain.exceptions
 
 interface JwtTokerError {
-    object Unauthorized : JwtTokerError // Сюда попадает 401
+    object PleaceUnauthorized : JwtTokerError
+    object UncorrectData: JwtTokerError
+    object Unauthorized : JwtTokerError
     object NoInternet : JwtTokerError
     object Unknown : JwtTokerError
 }

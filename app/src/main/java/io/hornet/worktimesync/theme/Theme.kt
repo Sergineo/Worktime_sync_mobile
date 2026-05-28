@@ -14,11 +14,11 @@ fun Theme(
 ) {
     val lightColorSchema = ColorSystem(
         primary = ComposeColor(0xFF121A23),          // Темно-синий для главных кнопок (Stake HUMP)
-        secondary = ComposeColor(0xFFE8E8E8),        // Серый для неактивных вкладок (UNSTAKE)
+        secondary = ComposeColor(0xFFf7f7fc),        // Серый для неактивных вкладок (UNSTAKE)
         onPrimary = ComposeColor(0xFFFFFFFF),        // Белый текст на темно-синих кнопках
-        onSecondary = ComposeColor(0xFF121A23),      // Темно-синий/черный текст на серых вкладках
-        background = ComposeColor(0xFFEBF0F3),       // Светло-серый фирменный фон приложения
-        onBackground = ComposeColor(0xFF000000),     // Черный текст для заголовков
+        onSecondary = ComposeColor(0xFFC7F7D5),      // Темно-синий/черный текст на серых вкладках
+        background = ComposeColor(0xFFC7F7D5),       // Светло-серый фирменный фон приложения
+        onBackground = ComposeColor(0xFF43E872),     // Черный текст для заголовков
         surface = ComposeColor(0xFFFFFFFF),          // Чистый белый для подложек карточек и полей ввода
         onSurface = ComposeColor(0xFF000000),        // Черный текст внутри карточек
         onSurfaceVariant = ComposeColor(0xFF121A23).copy(alpha = 0.6f), // Приглушенный темно-синий для "Your Balance"
@@ -31,7 +31,7 @@ fun Theme(
         onPrimary = ComposeColor(0xFF000000),        // Черный текст для идеального контраста на зеленом фоне
         onSecondary = ComposeColor(0xFFE8E8E8),      // Серый текст на темно-синих вкладках
         background = ComposeColor(0xFF000000),       // Чистый черный фон приложения
-        onBackground = ComposeColor(0xFFFBF3F3),     // Светло-серый текст для заголовков
+        onBackground = ComposeColor(0xFFF43E872),     // Светло-серый текст для заголовков
         surface = ComposeColor(0xFF121A23),          // Темно-синий для карточек и полей ввода
         onSurface = ComposeColor(0xFFFFFFFF),        // Белый текст внутри карточек
         onSurfaceVariant = ComposeColor(0xFF6BFF95), // Зеленый для важных цифр (ROI, доходность) или серый E8E8E8 для обычных подписей

@@ -22,10 +22,10 @@ class AuthorizationInteractor(
     val validateEmptyTextFiled: ValidateTextFieldProcessor = { event ->
         if (!(event.message!!.isEmpty() || event.message.isBlank())) {
             Log.d("INPUT", event.message)
-            TextField(message = event.message, isError = false)
+            event
         } else {
             Log.d("INPUT", event.message)
-            TextField(
+            event.copy(
                 message = event.message,
                 isError = true,
                 errorDescription = R.string.empty_text_field
@@ -36,7 +36,7 @@ class AuthorizationInteractor(
     val validateEmailTextField: ValidateTextFieldProcessor = { event ->
         if (event.message!!.isEmpty() || event.message.isBlank()) {
             Log.d("INPUT", event.message)
-            TextField(
+            event.copy(
                 message = event.message,
                 isError = true,
                 errorDescription = R.string.empty_text_field
@@ -44,10 +44,10 @@ class AuthorizationInteractor(
         }
         if (event.message.contains('@') && event.message.contains('.')) {
             Log.d("INPUT", event.message)
-            TextField(message = event.message, isError = false)
+            event
         } else {
             Log.d("INPUT", event.message)
-            TextField(
+            event.copy(
                 message = event.message,
                 isError = true,
                 errorDescription = R.string.uncorrect_email_format
@@ -57,16 +57,16 @@ class AuthorizationInteractor(
     val validateRepeatPassword: ValidateRepeatPasswordProcessor =
         { event, password, repeatPassword ->
             if (repeatPassword!!.isEmpty() || repeatPassword.isBlank()) {
-                TextField(
+                event.copy(
                     message = event.message,
                     isError = true,
                     errorDescription = R.string.empty_text_field
                 )
             }
             if (password.equals(repeatPassword)) {
-                TextField(message = event.message, isError = false)
+                event
             } else {
-                TextField(
+                event.copy(
                     message = event.message,
                     isError = true,
                     errorDescription = R.string.uncorrect_repeat_password
@@ -77,8 +77,8 @@ class AuthorizationInteractor(
     suspend fun login(email: String, password: String): Result<JwtToken?>{
         return authorizationRepository.login(email, password)
     }
-    suspend fun registration(registrationFragment: RegistrationFragment): Result<User?>{
-        return authorizationRepository.registration(registrationFragment)
+    suspend fun registration(email: String, password: String): Result<User?>{
+        return authorizationRepository.registration(email, password)
     }
     suspend fun saveLocalToken(jwtToken: JwtToken){
         authorizationRepository.saveLocalToken(jwtToken)

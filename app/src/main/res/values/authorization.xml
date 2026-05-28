@@ -15,4 +15,5 @@
     <string name="role">Роль</string>
     <string name="next">Далее</string>
     <string name="uncorrent_login_or_password">Неверный логин или пароль</string>
+    <string name="please_authorized">Авторизируйтесь</string>
 </resources>

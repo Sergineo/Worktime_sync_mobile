@@ -36,7 +36,8 @@ class JwtTokenRemoteDataSource(
                     val rawError = response.errorBody()?.string()
                     Log.e("HTTP_ERROR_BODY", "Код: ${response.code()} | Тело: $rawError")
                     when (response.code()) {
-                        401, 422 -> Result.failure(DomainCoreException(JwtTokerError.Unauthorized))
+                        401 -> Result.failure(DomainCoreException(JwtTokerError.Unauthorized))
+                        422 -> Result.failure(DomainCoreException(JwtTokerError.UncorrectData))
                         else -> Result.failure(DomainCoreException(JwtTokerError.Unknown))
                     }
                 }
@@ -51,51 +52,72 @@ class JwtTokenRemoteDataSource(
     }
 
     suspend fun refreshToken(jwtToken: JwtToken): Result<JwtToken> {
-        return try {
-            val response: Response<JwtToken> = jwtApi.refreshToken(
-                jwtToken.refresh_token.toString()
-            )
-            if (response.isSuccessful) {
-                val token = response.body()
-                if (token != null) {
-                    Result.success(token)
+        return withContext(Dispatchers.IO) {
+            try {
+                Log.d("NETWORK_START", "Запрос на обновление токена")
+                val response: Response<JwtToken> = jwtApi.refreshToken(
+                    jwtToken.refresh_token.toString()
+                )
+
+                if (response.isSuccessful) {
+                    val token = response.body()
+                    if (token != null) {
+                        Result.success(token)
+                    } else {
+                        Result.failure(DomainCoreException(JwtTokerError.Unknown))
+                    }
                 } else {
-                    Result.failure(DomainCoreException(JwtTokerError.Unknown))
+                    val rawError = response.errorBody()?.string()
+                    Log.e("HTTP_ERROR_BODY", "Код: ${response.code()} | Тело: $rawError")
+                    when (response.code()) {
+                        401 -> Result.failure(DomainCoreException(JwtTokerError.Unauthorized))
+                        else -> Result.failure(DomainCoreException(JwtTokerError.Unknown))
+                    }
                 }
-            } else {
-                when (response.code()) {
-                    401 -> Result.failure(DomainCoreException(JwtTokerError.Unauthorized))
-                    else -> Result.failure(DomainCoreException(JwtTokerError.Unknown))
-                }
+            } catch (e: IOException) {
+                Log.e("NETWORK_CRASH", "Ошибка сети при обновлении токена: ${e.message}")
+                Result.failure(DomainCoreException(JwtTokerError.NoInternet))
+            } catch (e: Exception) {
+                Log.e("NETWORK_CRASH", "Критический сбой при обновлении токена: ${e.message}")
+                Result.failure(e)
             }
-        } catch (e: IOException) {
-            Result.failure(DomainCoreException(JwtTokerError.NoInternet))
-        } catch (e: Exception) {
-            Result.failure(e)
         }
     }
 
-    suspend fun registration(fragment: RegistrationDto): Result<User?> {
-        return try {
-            val response: Response<User> = jwtApi.registration(fragment)
+    suspend fun registration(email: String, password: String): Result<User?> {
+        return withContext(Dispatchers.IO) {
+            try {
+                Log.d("NETWORK_START", "Регистрация пользователя: $email")
+                val response: Response<User> = jwtApi.registration(
+                    RegistrationDto(
+                        email = email,
+                        password = password
+                    )
+                )
 
-            if (response.isSuccessful) {
-                val user = response.body()
-                if (user != null) {
-                    Result.success(user)
+                if (response.isSuccessful) {
+                    val user = response.body()
+                    if (user != null) {
+                        Result.success(user)
+                    } else {
+                        Result.failure(DomainCoreException(JwtTokerError.Unknown))
+                    }
                 } else {
-                    Result.failure(DomainCoreException(JwtTokerError.Unknown))
+                    val rawError = response.errorBody()?.string()
+                    Log.e("HTTP_ERROR_BODY", "Код: ${response.code()} | Тело: $rawError")
+                    when (response.code()) {
+                        401 -> Result.failure(DomainCoreException(JwtTokerError.Unauthorized))
+                        422 -> Result.failure(DomainCoreException(JwtTokerError.UncorrectData))
+                        else -> Result.failure(DomainCoreException(JwtTokerError.Unknown))
+                    }
                 }
-            } else {
-                when (response.code()) {
-                    401 -> Result.failure(DomainCoreException(JwtTokerError.Unauthorized))
-                    else -> Result.failure(DomainCoreException(JwtTokerError.Unknown))
-                }
+            } catch (e: IOException) {
+                Log.e("NETWORK_CRASH", "Ошибка сети при регистрации: ${e.message}")
+                Result.failure(DomainCoreException(JwtTokerError.NoInternet))
+            } catch (e: Exception) {
+                Log.e("NETWORK_CRASH", "Критический сбой при регистрации: ${e.message}")
+                Result.failure(e)
             }
-        } catch (e: IOException) {
-            Result.failure(DomainCoreException(JwtTokerError.NoInternet))
-        } catch (e: Exception) {
-            Result.failure(e)
         }
     }
 }

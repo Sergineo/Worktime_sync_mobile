@@ -1,6 +1,12 @@
 package io.hornet.worktimesync.authorization.domain.screen_model
 
 interface NextButtonScreenEvents {
-    data object AuthorizationClicked : NextButtonScreenEvents
-    data object RegistrationClicked : NextButtonScreenEvents
+    data class AuthorizationClicked(
+        val email: TextField = TextField(),
+        val password: TextField = TextField()
+    ) : NextButtonScreenEvents
+    data class RegistrationClicked(
+        val email: TextField = TextField(),
+        val password: TextField = TextField()
+    ) : NextButtonScreenEvents
 }

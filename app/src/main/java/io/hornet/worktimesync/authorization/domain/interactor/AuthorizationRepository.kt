@@ -7,6 +7,6 @@ import io.hornet.worktimesync.core.domain.model.JwtToken
 
 interface AuthorizationRepository {
     suspend fun login(email: String, password: String): Result<JwtToken?>
-    suspend fun registration(registrationFragment: RegistrationFragment): Result<User?>
+    suspend fun registration(email: String, password: String): Result<User?>
     suspend fun saveLocalToken(jwtToken: JwtToken)
 }

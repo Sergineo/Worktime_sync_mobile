@@ -5,6 +5,7 @@ import io.hornet.worktimesync.authorization.domain.interactor.AuthorizationRepos
 import io.hornet.worktimesync.authorization.presentation.navigation.router.AuthorizationRouter
 import io.hornet.worktimesync.authorization.presentation.view_model.AuthorizationScreenViewModel
 import io.hornet.worktimesync.core.presentaition.navigation.router_impl.AuthorizationRouterImpl
+import io.hornet.worktimesync.core.presentaition.view_model.NavViewModel
 import io.hornet.worktimesync.data.local.data_source.JwtTokenLocalDataSource
 import io.hornet.worktimesync.data.remote.data_source.JwtTokenRemoteDataSource
 import io.hornet.worktimesync.data.repository.AuthorizationRepositoryImpl
@@ -17,5 +18,5 @@ val authorizationDi = module {
     }
     single { AuthorizationInteractor(get<AuthorizationRepository>()) }
     single<AuthorizationRouter> { AuthorizationRouterImpl(get<AuthorizationScreenViewModel>()) }
-    viewModel { AuthorizationScreenViewModel(get<AuthorizationInteractor>()) }
+    viewModel { AuthorizationScreenViewModel(get<AuthorizationInteractor>(), get<NavViewModel>()) }
 }
