@@ -12,7 +12,7 @@ import io.hornet.worktimesync.data.repository.AuthorizationRepositoryImpl
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-val authorizationDi = module {
+val authorizationDiModule = module {
     single<AuthorizationRepository> {
         AuthorizationRepositoryImpl(get<JwtTokenRemoteDataSource>(), get<JwtTokenLocalDataSource>())
     }

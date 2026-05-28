@@ -15,10 +15,13 @@ import androidx.navigation.compose.composable
 import io.hornet.worktimesync.authorization.presentation.AuthorizationScreen
 import io.hornet.worktimesync.authorization.presentation.navigation.router.AuthorizationRouter
 import io.hornet.worktimesync.authorization.presentation.view_model.AuthorizationScreenViewModel
+import io.hornet.worktimesync.avaliable_map.presentation.AvailabilityScreen
+import io.hornet.worktimesync.avaliable_map.presentation.view_model.AvailabilityViewModel
 import io.hornet.worktimesync.core.domain.screen_model.NavigationScreenEvent
 import io.hornet.worktimesync.core.presentaition.view_model.NavViewModel
 import io.hornet.worktimesync.core.presentaition.widget.MainToastWidget
 import io.hornet.worktimesync.profile.presentation.ProfileScreen
+import io.hornet.worktimesync.profile.presentation.view_model.ProfileViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
@@ -27,7 +30,9 @@ fun NavRoot(
     navController: NavHostController,
     paddingValues: PaddingValues,
     navViewModel: NavViewModel = koinViewModel(),
-    authorizationScreenViewModel: AuthorizationScreenViewModel = koinViewModel()
+    authorizationScreenViewModel: AuthorizationScreenViewModel = koinViewModel(),
+    profileViewModel: ProfileViewModel = koinViewModel(),
+    availabilityViewModel: AvailabilityViewModel = koinViewModel()
 ) {
     val router: AuthorizationRouter = koinInject()
     val startDestination = navViewModel._mainViewModel.collectAsState().value
@@ -57,7 +62,17 @@ fun NavRoot(
             enterTransition = { fadeIn(tween(300)) },
             exitTransition = { fadeOut(tween(300)) }
         ) {
-            ProfileScreen()
+            ProfileScreen(
+                viewModel = profileViewModel
+            )
+        }
+        composable<NavigationScreenEvent.MapScreenPoint>(
+            enterTransition = { fadeIn(tween(300)) },
+            exitTransition = { fadeOut(tween(300)) }
+        ) {
+            AvailabilityScreen(
+                viewModel = availabilityViewModel
+            )
         }
     }
 }

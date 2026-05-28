@@ -5,7 +5,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-class JwtApiClient {
+class ApiClient {
     private val okHttpClient = OkHttpClient.Builder()
         .connectTimeout(3000, TimeUnit.SECONDS)
         .readTimeout(3000, TimeUnit.SECONDS)
@@ -19,5 +19,5 @@ class JwtApiClient {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
-    fun createJwtApiClientSession(): Retrofit = jwtApiConfig
+    fun createApiClientSession(): Retrofit = jwtApiConfig
 }

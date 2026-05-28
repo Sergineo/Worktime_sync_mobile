@@ -57,7 +57,7 @@ class JwtTokenLocalDataSource(
     fun deleteJwtToken() {
         sharedPreferences.edit { clear() }
     }
-    init{
+    init {
         deleteJwtToken()
     }
 }

@@ -13,7 +13,12 @@ class DiApp : Application() {
         startKoin {
             androidLogger(Level.ERROR)
             androidContext(this@DiApp)
-            modules(coreDiModule, authorizationDi)
+            modules(
+                coreDiModule,
+                authorizationDiModule,
+                profileDiModule,
+                mapDiModule
+            )
         }
     }
 }

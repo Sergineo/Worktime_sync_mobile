@@ -38,14 +38,14 @@ fun TopBar(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    val isProfileScreen =
+    val isAuthScreen =
         currentRoute ==
-                NavigationScreenEvent.ProfileScreenPoint::class.qualifiedName
+                NavigationScreenEvent.AuthorizationScreenPoint::class.qualifiedName
 
 
 
     AnimatedVisibility(
-        visible = isProfileScreen,
+        visible = !isAuthScreen,
         enter = slideInVertically { -it },
         exit = slideOutVertically { it }
     ) {

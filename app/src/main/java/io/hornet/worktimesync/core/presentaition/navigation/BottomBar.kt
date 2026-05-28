@@ -36,6 +36,10 @@ fun BottomBar(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
+    val isAuthScreen =
+        currentRoute ==
+                NavigationScreenEvent.AuthorizationScreenPoint::class.qualifiedName
+
     val isProfileScreen =
         currentRoute ==
                 NavigationScreenEvent.ProfileScreenPoint::class.qualifiedName
@@ -50,7 +54,7 @@ fun BottomBar(
     val systemBarHeight = navigationBarsPadding.calculateBottomPadding()
 
     AnimatedVisibility(
-        visible = isProfileScreen,
+        visible = !isAuthScreen,
         enter = slideInVertically { it },
         exit = slideOutVertically { -it }
     ) {
@@ -73,7 +77,11 @@ fun BottomBar(
                         .align(Alignment.CenterVertically)
                         .wrapContentSize(),
                     shape = RoundedCornerShape(6.dp),
-                    onClick = {},
+                    onClick = {
+                        if (!isProfileScreen) {
+                            navController.navigate(NavigationScreenEvent.ProfileScreenPoint)
+                        }
+                    },
                     content = {
                         Icon(
                             painter = painterResource(R.drawable.users),
@@ -88,7 +96,11 @@ fun BottomBar(
                         .align(Alignment.CenterVertically)
                         .wrapContentSize(),
                     shape = RoundedCornerShape(6.dp),
-                    onClick = {},
+                    onClick = {
+                        if (!isMapScreen) {
+                            navController.navigate(NavigationScreenEvent.MapScreenPoint)
+                        }
+                    },
                     content = {
                         Icon(
                             painter = painterResource(R.drawable.map),
@@ -103,7 +115,11 @@ fun BottomBar(
                         .align(Alignment.CenterVertically)
                         .wrapContentSize(),
                     shape = RoundedCornerShape(6.dp),
-                    onClick = {},
+                    onClick = {
+                        if (!isConflictScreen){
+                            navController.navigate(NavigationScreenEvent.ConflictScreenPoint)
+                        }
+                    },
                     content = {
                         Icon(
                             painter = painterResource(R.drawable.conflicts),
